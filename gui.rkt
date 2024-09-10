@@ -55,7 +55,7 @@
   (define key (send e get-key-code))  
 
   ; Debug: Imprime la tecla presionada
-  (displayln (format "Key pressed: ~a" key))
+  ;(displayln (format "Key pressed: ~a" key))
 
   ; Verifica las teclas de flecha y la tecla 'q' para la selección
   (cond
@@ -200,4 +200,4 @@
             (send game-frame center 'both)
             (send game-frame show #t))))
 
-(TTT 4 4)
+(TTT 5 5)

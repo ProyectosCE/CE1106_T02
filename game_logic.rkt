@@ -51,7 +51,7 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
 
 ; Verifica si hay un ganador en el juego
 (define (winner? grid)
-   (cond ((or (winner?-h grid) (winner?-v grid)) ;(winner?-d grid)) 
+   (cond ((or (winner?-h grid) (winner?-v grid) (winner?-d grid))
           #t)
          (else
           #f)))
@@ -107,3 +107,57 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
 
 
 ; DIAGONAL check - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+; Función principal que verifica si hay un ganador en las diagonales
+(define (winner?-d grid)
+  (define (extract-diagonals grid)
+    (define (get-diagonal-down-right x y)
+      (define (helper x y acc)
+        (cond
+          [(or (>= x (length grid)) (>= y (length (car grid)))) (reverse acc)]
+          [else (helper (+ x 1) (+ y 1) (cons (list-ref (list-ref grid x) y) acc))]))
+      (helper x y '()))
+
+    (define (get-diagonal-down-left x y)
+      (define (helper x y acc)
+        (cond
+          [(or (>= x (length grid)) (< y 0)) (reverse acc)]
+          [else (helper (+ x 1) (- y 1) (cons (list-ref (list-ref grid x) y) acc))]))
+      (helper x y '()))
+
+    (define (is-valid-diagonal diag)
+      (>= (length diag) 3))
+    
+    (define (extract-all-diagonals)
+      (define (extract-diagonals-from-start x y)
+        (filter is-valid-diagonal
+                (list (get-diagonal-down-right x y)
+                      (get-diagonal-down-left x y))))
+    
+      (define (helper x y acc)
+        (cond
+          [(>= x (length grid)) acc]
+          [(>= y (length (car grid))) (helper (+ x 1) 0 acc)]
+          [else (helper x (+ y 1) (append acc (extract-diagonals-from-start x y)))]))
+    
+      (helper 0 0 '()))
+
+    (extract-all-diagonals))
+
+  (define (check-diagonals diagonals)
+    (cond
+      ((null? diagonals) #f)
+      ((three-in-a-row? (car diagonals)) #t)
+      (else (check-diagonals (cdr diagonals)))))
+
+  (check-diagonals (extract-diagonals grid)))
+
+
+#| 
+================================================================================================= 
+
+Algortimo Codicioso
+
+=================================================================================================
+|# 
+

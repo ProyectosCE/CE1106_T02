@@ -80,28 +80,30 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
 (define (winner?-v grid)
   (cond
     ((or (null? grid) (null? (car grid))) #f) ; Si la cuadrícula está vacía
-    ((or (winner?-v-aux1 grid 'x) (winner?-v-aux1 grid 'o)) #t) ; Verifica si hay tres 'x' o tres 'o' seguidos
-    (else (winner?-v (winner?-v-aux2 grid '()))))) ; Elimina la primera columna y sigue verificando
+    ((winner?-v-aux1 grid) #t) ; Verifica si hay tres 'x' o tres 'o' seguidos
+    (else (winner?-v (winner?-v-aux2 grid))))) ; Elimina la primera columna y sigue verificando
 
-; Verifica si hay tres elementos seguidos en la primera columna de cada fila, excluyendo '_'
-(define (winner?-v-aux1 grid element)
-  (define (extract-column col grid)
-    (map (lambda (row) (list-ref row col)) grid))
+; Verifica si hay tres elementos seguidos en una columna, excluyendo '_'
+(define (winner?-v-aux1 grid)
+  (define (extract-column grid col)
+    (cond
+      ((null? grid) '()) ; Si la cuadrícula está vacía
+      ((null? (car grid)) '()) ; Si la fila está vacía
+      (else (cons (car (car grid)) (extract-column (cdr grid) col))))) ; Extrae la columna
 
-  (define (check-columns grid)
-    (let loop ((i 0))
-      (cond
-        ((>= i (length (car grid))) #f) ; Si se han revisado todas las columnas
-        ((three-in-a-row? (extract-column i grid)) #t) ; Verifica la columna actual
-        (else (loop (+ i 1))))))
-  
-  (check-columns grid))
+  (define (check-column grid col)
+    (cond
+      ((>= col (length (car grid))) #f) ; Si se han revisado todas las columnas
+      ((three-in-a-row? (extract-column grid col)) #t) ; Verifica la columna actual
+      (else (check-column grid (+ col 1))))) ; Verifica la siguiente columna
+
+  (check-column grid 0))
 
 ; Elimina la primera columna de cada fila
-(define (winner?-v-aux2 grid nGrid)
+(define (winner?-v-aux2 grid)
   (cond
-    ((null? grid) nGrid) ; Si la cuadrícula está vacía, devuelve la nueva cuadrícula
-    (else (winner?-v-aux2 (cdr grid) (cons (cdr (car grid)) nGrid))))) ; Elimina la primera columna de cada fila
+    ((null? grid) '()) ; Si la cuadrícula está vacía, devuelve la nueva cuadrícula
+    (else (cons (cdr (car grid)) (winner?-v-aux2 (cdr grid)))))) ; Elimina la primera columna de cada fila
 
 
 ; DIAGONAL check - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

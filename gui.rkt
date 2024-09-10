@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;(require "game_logic.rkt")
+(require "game_logic.rkt")
 
 ; Crea una lista de longitud n con un valor dado
 (define (get-list n value)
@@ -69,9 +69,9 @@
      ; Actualiza el carácter mostrado en el canvas seleccionado
      (send (list-ref canvases (+ current-column (* current-row global-columns))) set-character #\x)
      (send (list-ref canvases (+ current-column (* current-row global-columns))) refresh)
-     (displayln game-grid)          ])
+     (displayln game-grid)
 
-#|
+
     ; ======================================== CAMBIAR ========================================
      ; Verifica si el jugador ganó o si hay un empate después del movimiento del jugador
      (when (draw? game-grid)
@@ -80,8 +80,9 @@
 
      (when (winner? game-grid)
        (message-box "Win" "You won!")
-       (reset-game))
+       (reset-game))])
 
+#|
      ; Turno del computador, solo si el juego no ha terminado
      (when (and (not (draw? game-grid)) (not (winner? game-grid)))
        (let ((move (get-computer-next-move game-grid global-rows global-columns)))
@@ -99,7 +100,6 @@
        (reset-game))])
 
   |#
-
 
   ; Actualiza la pantalla para mostrar la selección actual
   (send game-frame refresh)
@@ -200,4 +200,4 @@
             (send game-frame center 'both)
             (send game-frame show #t))))
 
-(TTT 3 8)
+(TTT 4 4)

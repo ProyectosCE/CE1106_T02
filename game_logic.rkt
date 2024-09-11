@@ -95,7 +95,7 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
        #t) ; Tres elementos iguales, excluyendo '_'
       (else (three-in-a-row? (cdr lst))))) ; Verifica el resto de la lista
 
-; HORIZONTAL check - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+; ====================================== Verificacion Horizontal ======================================
 
 ; Verifica si hay tres elementos seguidos en una fila, excluyendo '_'
 (define (winner?-h grid)
@@ -104,7 +104,7 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
     ((three-in-a-row? (car grid)) #t) ; Verifica la primera fila
     (else (winner?-h (cdr grid))))) ; Verifica las demás filas
 
-; VERTICAL check - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+; ====================================== Verificacion Vertical ======================================
 
 ; Verifica si hay tres elementos seguidos en una columna, excluyendo '_'
 (define (winner?-v grid)
@@ -136,7 +136,7 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
     (else (cons (cdr (car grid)) (winner?-v-aux2 (cdr grid)))))) ; Elimina la primera columna de cada fila
 
 
-; DIAGONAL check - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+; ====================================== Verificacion Diagonal ======================================
 
 ; Función principal que verifica si hay un ganador en las diagonales
 (define (winner?-d grid)

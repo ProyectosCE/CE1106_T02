@@ -39,6 +39,11 @@ Condiciones de victoria del juego
 
 draw?, función que toma una cuadrícula para analizar y devuelve verdadero si hay un empate en el juego.
 empty?, función que toma una cuadrícula para analizar y devuelve verdadero si la cuadrícula está vacía.
+three-in-a-row?, función auxiliar que verifica si hay tres elementos seguidos en una lista, excluyendo '_'.
+winner?, función que toma una cuadrícula para analizar y devuelve verdadero si hay un ganador en el juego.
+-> winner?-h, función auxiliar que verifica si hay tres elementos seguidos en una fila, excluyendo '_'.
+-> winner?-v, función auxiliar que verifica si hay tres elementos seguidos en una columna, excluyendo '_'.
+-> winner?-d, función auxiliar que verifica si hay un ganador en las diagonales.
 
 =============================================================================================
 |#
@@ -60,7 +65,6 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
          (else
           (draw?-aux (cdr list)))))
 
-
 ; Verifica si la matrix está vacía
 (define (empty? grid)
    (cond ((null? grid)
@@ -77,7 +81,6 @@ empty?, función que toma una cuadrícula para analizar y devuelve verdadero si 
           #t)
          (else
           (empty?-aux (cdr list)))))
-
 
 ; Verifica si hay un ganador en el juego
 (define (winner? grid)

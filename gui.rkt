@@ -187,5 +187,3 @@ Función principal
             (set! canvases (get-panes-canvases panes 0))
             (send game-frame center 'both)
             (send game-frame show #t))))
-
-(TTT 4 4)

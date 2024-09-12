@@ -23,7 +23,7 @@ Consulta el archivo LICENSE para más detalles.
 (define current-column 0)
 
 
-;; Función para mostrar mensajes cortos de ganancia o empate
+;; Función para mostrar mensajes cortos de gane o empate
 (define (mostrar-mensaje-simple titulo texto icono)
   (define mi-dialogo (new dialog%
                           [label titulo]
@@ -80,7 +80,7 @@ Consulta el archivo LICENSE para más detalles.
 
 ;; Función para mostrar la pantalla de ayuda
 (define (mostrar-ayuda)
-  (mostrar-mensaje-con-editor "Ayuda" "Use las teclas de flecha o WASD para mover\nUse 'espacio' o 'enter' para seleccionar." "icon.png"))
+  (mostrar-mensaje-con-editor "Ayuda" "Use las teclas de flecha o WASD para mover\nUse 'espacio' o 'enter' para seleccionar." "assets/help.png"))
 
 ;; Función para mostrar la pantalla de información
 (define (mostrar-informacion)
@@ -89,7 +89,7 @@ Consulta el archivo LICENSE para más detalles.
 Este programa está bajo licencia MIT \nCopyright (c) 2024\n\
 Desarrollado por: José Bernardo Barquero Bonilla,\nJose Eduardo Campos Salazar,\n\
 Jimmy Feng Feng, \nAlexander Montero Vargas"
-                   "icon.png"))
+                   "assets/information.png"))
 ;; Función para cambiar el tamaño del tablero
 (define (cambiar-tamano)
   (send game-frame show #f)
@@ -154,11 +154,11 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
            
            ;; Verifica si el jugador ganó o si hay un empate después del movimiento del jugador
            (when (draw? game-grid)
-             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "icon.png") ; Usar función personalizada
+             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png") ; Usar función personalizada
              (reset-game))
 
            (when (winner? game-grid)
-             (mostrar-mensaje-simple "Ganador" "¡Has ganado!" "icon.png") ; Usar función personalizada
+             (mostrar-mensaje-simple "Ganador" "¡Has ganado!" "assets/trofeo.png") ; Usar función personalizada
              (reset-game))
 
            ;; Turno del greedy-bot, solo si el juego no ha terminado
@@ -169,12 +169,12 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
 
            ;; Verifica otra vez si el jugador ganó después del movimiento del greedy-bot
            (when (winner? game-grid)
-             (mostrar-mensaje-simple "Ganador" "¡El greedy-bot ganó!" "icon.png") ; Usar función personalizada
+             (mostrar-mensaje-simple "Ganador" "¡El greedy-bot ganó!" "assets/bot.png") ; Usar función personalizada
              (reset-game))
 
            ;; Verifica si hay un empate después del movimiento del greedy-bot
            (when (draw? game-grid)
-             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "icon.png") ; Usar función personalizada
+             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png") ; Usar función personalizada
              (reset-game)))])
 
       ; Actualiza la pantalla para mostrar la selección actual
@@ -348,7 +348,7 @@ Función principal
                                   (set! canvases (get-panes-canvases panes 0))
 
                                   ; Configurar el ícono de la ventana
-                                  (define my-logo (read-bitmap "icon.png"))
+                                  (define my-logo (read-bitmap "assets/icon.png"))
                                   (send game-frame set-icon my-logo)
 
                                   ; Mostrar la ventana de juego y ocultar la ventana de entrada
@@ -359,7 +359,7 @@ Función principal
 (define (TicTacToe)
   ; Center both frames as default
 
-(define my-logo (read-bitmap "icon.png"))
+(define my-logo (read-bitmap "assets/icon.png"))
 
 (send input-frame set-icon my-logo)
 

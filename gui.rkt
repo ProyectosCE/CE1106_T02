@@ -291,18 +291,18 @@ Función principal
 ;; Input dimensions explanatory message
 (define message (new message%
                      (parent input-frame)
-                     (label "Seleccione el tamño del tablero:")
+                     (label "Seleccione el tamaño del tablero:")
                      [vert-margin 15]))
 
 ;; List-control to select the number of rows
 (define rows-input (new choice%
-                     (label "Filas       ")
+                     (label "Filas             ")
                      (parent input-frame)
                      (choices (list "3" "4" "5" "6" "7" "8" "9" "10"))))
 
 ;; List-control to select the number of columns
 (define columns-input (new choice%
-                        (label "Columnas ")
+                        (label "Columnas   ")
                         (parent input-frame)
                         (choices (list "3" "4" "5" "6" "7" "8" "9" "10"))))
 
@@ -375,3 +375,6 @@ Función principal
   ;; Mostrar la ventana de juego y ocultar la ventana de entrada
   (send game-frame show #t)
   (send input-frame show #f))
+
+
+(TTT 3 3)

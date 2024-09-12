@@ -13,7 +13,7 @@
 
 ; Ventana para jugar el juego
 (define game-frame (new frame%
-                   [label "Tic Tac Toe"]
+                   [label "Tic Tac Racket"]
                    [width 600]
                    [height 600]))
 
@@ -73,12 +73,11 @@
       (send game-frame refresh)
       (send this refresh))
 
-
     ; Forzar el foco en el canvas para la entrada del teclado
     (define/override (on-event e)
       (send this focus)) 
 
-  ; Dibuja el canvas, con un resaltado si esta es la selección actual  
+    ; Dibuja el canvas, con un resaltado si esta es la selección actual  
     (define/override  (on-paint)
       (let ((dc (get-dc)))
         (send dc clear)
@@ -164,7 +163,6 @@ Algunas funciones extras que se necesitan para el juego
 (define (cell-empty? row col)
   (equal? (list-ref (list-ref game-grid row) col) '_))
 
-
 #|
 ===================================================================
 
@@ -172,18 +170,58 @@ Función principal
 
 ===================================================================
 |#
-(define (TTT rows columns)
-    (cond 
-        ((and (< rows 3) (< columns 3)) (message-box "Error" "The minimum size is 3x3"))
-        ((and (> rows 10) (> columns 10)) (message-box "Error" "The maximum size is 10x10"))
-        (else 
-            (set! global-rows rows)
-            (set! global-columns columns)
-            (set! game-frame (new frame% [label "Tic Tac Racket"] [width 600] [height 600]))
-            (send game-frame center 'both)
-            (set! game-grid (get-matrix global-rows global-columns '_))
-            (set! main-pane (new vertical-pane% [parent game-frame] [vert-margin 5] [horiz-margin 5] [spacing 5]))
-            (set! panes (get-panes 0))
-            (set! canvases (get-panes-canvases panes 0))
-            (send game-frame center 'both)
-            (send game-frame show #t))))
+
+; Ventana de entrada para seleccionar dimensiones del tablero
+(define input-frame (new frame%
+                      [label "Tic Tac Racket - Dimensions"]
+                      [width 400]
+                      [height 200]))
+
+;; Input dimensions explanatory message
+(define message (new message%
+                     (parent input-frame)
+                     (label "Tic Tac Racket grid dimensions:")
+                     [vert-margin 15]))
+
+;; List-control to select the number of rows
+(define rows-input (new choice%
+                     (label "Rows       ")
+                     (parent input-frame)
+                     (choices (list "3" "4" "5" "6" "7" "8" "9" "10"))))
+
+;; List-control to select the number of columns
+(define columns-input (new choice%
+                        (label "Columns ")
+                        (parent input-frame)
+                        (choices (list "3" "4" "5" "6" "7" "8" "9" "10"))))
+
+;; Button to set the grid dimensions and start playing the game
+(define play-btn (new button%
+                   [parent input-frame]
+                   [label "Play"]
+                   [min-width 75]
+                   [min-height 50]
+                   [vert-margin 15]
+                   [callback (λ (b e)
+                     ; Overriding the default game-frame contents
+                     (set! global-rows (string->number (send rows-input get-string-selection)))
+                     (set! global-columns (string->number (send columns-input get-string-selection)))
+                     (set! game-frame (new frame% [label "Tic Tac Racket"] [width 600] [height 600]))
+                     (send game-frame center 'both)
+                     (set! game-grid (get-matrix global-rows global-columns '_))
+                     (set! main-pane (new vertical-pane% [parent game-frame] [vert-margin 5] [horiz-margin 5] [spacing 5]))
+                     (set! panes (get-panes 0))
+                     (set! canvases (get-panes-canvases panes 0))
+
+                     ; Switching from input-frame to game-frame
+                     (send game-frame show #t)
+                     (send input-frame show #f) )]))
+
+;; Starts the game by showing the window to input the grid dimensions
+(define (TicTacToe)
+  ; Center both frames as default
+  (send game-frame center 'both)
+  (send input-frame center 'both)
+  (send input-frame show #t))
+
+(TicTacToe)

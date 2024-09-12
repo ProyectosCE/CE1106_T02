@@ -284,25 +284,25 @@ Función principal
 
 ; Ventana de entrada para seleccionar dimensiones del tablero
 (define input-frame (new frame%
-                      [label "Tic Tac Toe - Dimensions"]
+                      [label "Tic Tac Toe - Tamaño"]
                       [width 400]
                       [height 200]))
 
 ;; Input dimensions explanatory message
 (define message (new message%
                      (parent input-frame)
-                     (label "Tic Tac Toe grid dimensions:")
+                     (label "Seleccione el tamño del tablero:")
                      [vert-margin 15]))
 
 ;; List-control to select the number of rows
 (define rows-input (new choice%
-                     (label "Rows       ")
+                     (label "Filas       ")
                      (parent input-frame)
                      (choices (list "3" "4" "5" "6" "7" "8" "9" "10"))))
 
 ;; List-control to select the number of columns
 (define columns-input (new choice%
-                        (label "Columns ")
+                        (label "Columnas ")
                         (parent input-frame)
                         (choices (list "3" "4" "5" "6" "7" "8" "9" "10"))))
 

@@ -144,7 +144,7 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
          (set! current-column (max 0 (- current-column 1)))]
         [(or (equal? key #\d) (equal? key #\D) (equal? key 'right)) 
          (set! current-column (min (- global-columns 1) (+ current-column 1)))]
-        [(or (equal? key #\space) (equal? key #\return))
+        [(or (equal? key #\k) (equal? key #\space) (equal? key #\return))
          ;; Solo marca la celda si está vacía
          (when (cell-empty? current-row current-column)
            (set! game-grid (matrix-set-at game-grid current-row current-column 'x))
@@ -376,5 +376,3 @@ Función principal
   (send game-frame show #t)
   (send input-frame show #f))
 
-
-(TTT 3 3)

@@ -152,14 +152,14 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
            (send (list-ref canvases (+ current-column (* current-row global-columns))) set-character #\x)
            (send (list-ref canvases (+ current-column (* current-row global-columns))) refresh)
            (displayln game-grid)
-           
-           ;; Verifica si el jugador ganó o si hay un empate después del movimiento del jugador
-           (when (draw? game-grid)
-             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png") ; Usar función personalizada
-             (reset-game))
 
+           ;; Verifica si el jugador ganó o si hay un empate después del movimiento del jugador
            (when (winner? game-grid)
              (mostrar-mensaje-simple "Ganador" "¡Has ganado!" "assets/trofeo.png") ; Usar función personalizada
+             (reset-game))
+           
+           (when (draw? game-grid)
+             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png") ; Usar función personalizada
              (reset-game))
 
            ;; Turno del greedy-bot, solo si el juego no ha terminado

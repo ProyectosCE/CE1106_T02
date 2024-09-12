@@ -235,6 +235,19 @@ winner?, función que toma una cuadrícula para analizar y devuelve verdadero si
 
   (check-diagonals (extract-diagonals grid)))
 
+#|
+
+TEST 
+
+|#
+
+(define test 
+  '((x o o)
+   (x x x)
+   (o x o)))
+
+(displayln (draw? test))
+(displayln (winner? test))
 
 #|
 =================================================================================================

@@ -93,6 +93,7 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
 ;; Función para cambiar el tamaño del tablero
 (define (cambiar-tamano)
   (send game-frame show #f)
+  (send game-frame center 'both)
   (send input-frame show #t))
 
 ;; Ventana para jugar el juego
@@ -314,47 +315,11 @@ Función principal
                       [vert-margin 15]
                       [callback (λ (b e)
                                   ; Definir el tamaño del tablero basado en la selección del usuario
-                                  (set! global-rows (string->number (send rows-input get-string-selection)))
-                                  (set! global-columns (string->number (send columns-input get-string-selection)))
+                                  (define rows (string->number (send rows-input get-string-selection)))
+                                  (define cols (string->number (send columns-input get-string-selection)))
 
-                                  ; Crear la ventana de juego con la barra de menú
-                                  (set! game-frame (new frame% [label "Tic Tac Toe"] [width 600] [height 600]))
-
-                                  ; Crear la barra de menú para la nueva ventana
-                                  (define game-menu-bar (new menu-bar% [parent game-frame]))
-
-                                  ; Crear los menús y los elementos de menú
-                                  (define menu-opciones (new menu% [parent game-menu-bar] [label "Opciones"]))
-                                  (new menu-item% 
-                                       [parent menu-opciones] 
-                                       [label "Cambiar Tamaño"] 
-                                       [callback (lambda (item event) (cambiar-tamano))])
-                                  (new menu-item% 
-                                       [parent menu-opciones] 
-                                       [label "Información"] 
-                                       [callback (lambda (item event) (mostrar-informacion))])
-                                  (new menu-item% 
-                                       [parent menu-opciones] 
-                                       [label "Ayuda"] 
-                                       [callback (lambda (item event) (mostrar-ayuda))])
-
-                                  ; Centrar la ventana
-                                  (send game-frame center 'both)
-
-                                  ; Crear el grid y configurar el juego
-                                  (set! game-grid (get-matrix global-rows global-columns '_))
-                                  (set! main-pane (new vertical-pane% [parent game-frame] [vert-margin 5] [horiz-margin 5] [spacing 5]))
-                                  (set! panes (get-panes 0))
-                                  (set! canvases (get-panes-canvases panes 0))
-
-                                  ; Configurar el ícono de la ventana
-                                  (define my-logo (read-bitmap "assets/icon.png"))
-                                  (send game-frame set-icon my-logo)
-
-                                  ; Mostrar la ventana de juego y ocultar la ventana de entrada
-                                  (send game-frame show #t)
-                                  (send input-frame show #f))]))
-
+                                  ; Llamar a la función TTT con las dimensiones seleccionadas
+                                  (TTT rows cols))]))
 ;; Starts the game by showing the window to input the grid dimensions
 (define (TicTacToe)
   ; Center both frames as default
@@ -368,4 +333,45 @@ Función principal
   (send input-frame center 'both)
   (send input-frame show #t))
 
-(TicTacToe)
+;; Función para iniciar el juego con las dimensiones dadas
+(define (TTT rows cols)
+  (set! global-rows rows)
+  (set! global-columns cols)
+
+  ;; Crear la ventana de juego con la barra de menú
+  (set! game-frame (new frame% [label "Tic Tac Toe"] [width 600] [height 600]))
+
+  ;; Crear la barra de menú para la nueva ventana
+  (define game-menu-bar (new menu-bar% [parent game-frame]))
+
+  ;; Crear los menús y los elementos de menú
+  (define menu-opciones (new menu% [parent game-menu-bar] [label "Opciones"]))
+  (new menu-item% 
+       [parent menu-opciones] 
+       [label "Cambiar Tamaño"] 
+       [callback (lambda (item event) (cambiar-tamano))])
+  (new menu-item% 
+       [parent menu-opciones] 
+       [label "Información"] 
+       [callback (lambda (item event) (mostrar-informacion))])
+  (new menu-item% 
+       [parent menu-opciones] 
+       [label "Ayuda"] 
+       [callback (lambda (item event) (mostrar-ayuda))])
+
+  ;; Centrar la ventana
+  (send game-frame center 'both)
+
+  ;; Crear el grid y configurar el juego
+  (set! game-grid (get-matrix global-rows global-columns '_))
+  (set! main-pane (new vertical-pane% [parent game-frame] [vert-margin 5] [horiz-margin 5] [spacing 5]))
+  (set! panes (get-panes 0))
+  (set! canvases (get-panes-canvases panes 0))
+
+  ;; Configurar el ícono de la ventana
+  (define my-logo (read-bitmap "assets/icon.png"))
+  (send game-frame set-icon my-logo)
+
+  ;; Mostrar la ventana de juego y ocultar la ventana de entrada
+  (send game-frame show #t)
+  (send input-frame show #f))

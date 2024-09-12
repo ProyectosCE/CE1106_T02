@@ -309,7 +309,7 @@ Función principal
 ;; Botón para establecer las dimensiones de la cuadrícula y comenzar a jugar
 (define play-btn (new button%
                       [parent input-frame]
-                      [label "Play"]
+                      [label "Jugar"]
                       [min-width 75]
                       [min-height 50]
                       [vert-margin 15]

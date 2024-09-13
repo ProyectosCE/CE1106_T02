@@ -353,5 +353,3 @@ Función principal
   ;; Mostrar la ventana de juego y ocultar la ventana de entrada
   (send game-frame show #t)
   (send input-frame show #f))
-
-(TTT 3 3)

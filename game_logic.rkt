@@ -10,6 +10,15 @@ Copyright (c) 2024 José Bernardo Barquero Bonilla,
 Consulta el archivo LICENSE para más detalles.
 =============================================================================================
 |#
+#|
+==================================REFERENCIAS================================================
+Para este archivo game_logic.rkt se tomó como referencia general las siguientes fuentes:
+
+  Documentación propia de racket lang: https://docs.racket-lang.org/
+  Helo-Guzmán, J. E. (2001). Introducción a la programación con Scheme (2.a ed.). Editorial Tecnológica.
+ ===========================================================================================
+|#
+
 
 
 ;INSTRUCCIÓN PARA PODER USAR ESTE CÓDIGO EN OTROS MODULOS, COMO EL GUI
@@ -71,6 +80,8 @@ winner?, función que toma una cuadrícula para analizar y devuelve verdadero si
 -> winner?-v, función auxiliar que verifica si hay tres elementos seguidos en una columna, excluyendo '_'.
 -> winner?-d, función auxiliar que verifica si hay un ganador en las diagonales.
 
+
+Los metodos con un "?" se esprera retornen un #t o #f (Documentación de Racket Lang)
 =============================================================================================
 |#
 
@@ -132,6 +143,28 @@ winner?, función que toma una cuadrícula para analizar y devuelve verdadero si
             (equal? (car lst) (caddr lst)))
        #t) ; Tres elementos iguales, excluyendo '_'
       (else (three-in-a-row? (cdr lst))))) ; Verifica el resto de la lista
+
+
+
+#|
+  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+Recorridos de la matriz basados en las siguientes fuentes:
+Muñoz Guerrero, L. E. (2021). 
+  Programación de datos con Racket. 
+  Corporación Centro Internacional de Marketing Territorial para la Educación y el Desarrollo. 
+  https://memoriascimted.com/wp-content/uploads/2021/04/Programaci%C3%B3n-de-datos-con-Racket.pdf
+Usuario de Stack Overflow 0x2b3bfa0. (2020). 
+  ¿Cómo puedo recorrer una matriz de forma diagonal en Java? 
+  Stack Overflow en español. 
+  https://es.stackoverflow.com/a/407672
+Racket Documentation. (s.f). 
+  Matrices. The Racket Language. 
+  https://docs.racket-lang.org/math/matrices.html
+
+  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+|#
+
+
 
 ; ====================================== Verificación Horizontal ======================================
 
@@ -271,6 +304,19 @@ TEST
 =================================================================================================
 
 Algoritmo Codicioso
+
+Referencias:
+  Shil, A. (s.f.). 
+    Greedy algorithms. 
+    Department of Computer Science and Engineering, University at Buffalo. 
+    https://cse.buffalo.edu/~shil/courses/CSE531/Slides/Greedy-NA.pdf
+  GeeksforGeeks. (s.f.). 
+    Greedy algorithms. 
+    https://www.geeksforgeeks.org/greedy-algorithms/
+  Baeldung. (s.f.).
+    Greedy algorithms in Java. 
+    https://www.baeldung.com/java-greedy-algorithms
+
 
 =================================================================================================
 |#

@@ -1,7 +1,7 @@
 #lang racket
 
 #|
-============================================================================================= 
+================================== LICENCIA ================================================== 
 MIT License
 Copyright (c) 2024 José Bernardo Barquero Bonilla,
                    Jose Eduardo Campos Salazar,

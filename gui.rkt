@@ -102,7 +102,6 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
   (if (eq? control-mode 'mouse)
       (set! control-mode 'keyboard)
       (set! control-mode 'mouse))
-  (display (format "Función para cambiar los controles activada. Modo actual: ~a\n" control-mode))
   ;; Redibujar el canvas para actualizar el cuadro de selección
   (send game-frame refresh))
 

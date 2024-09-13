@@ -208,38 +208,40 @@ winner?, función que toma una cuadrícula para analizar y devuelve verdadero si
           [else (helper (+ x 1) (- y 1) (cons (list-ref (list-ref grid x) y) acc))]))
       (helper x y '()))
 
-    (define (is-valid-diagonal diag)
+    ; Función que revisa si una diagonal tiene al menos 3 elementos
+    (define (valid-diagonal? diag)
       (>= (length diag) 3))
-    
-    (define (extract-all-diagonals)
-      (define (extract-diagonals-from-start x y)
-        (filter is-valid-diagonal
-                (list (get-diagonal-down-right x y)
-                      (get-diagonal-down-left x y))))
-    
-      (define (helper x y acc)
-        (cond
-          [(>= x (length grid)) acc]
-          [(>= y (length (car grid))) (helper (+ x 1) 0 acc)]
-          [else (helper x (+ y 1) (append acc (extract-diagonals-from-start x y)))]))
-    
-      (helper 0 0 '()))
 
-    (extract-all-diagonals))
+    ; Función recursiva para agregar las diagonales válidas
+    (define (add-if-valid diag acc)
+      (if (valid-diagonal? diag)
+          (cons diag acc)
+          acc))
+
+    ; Función recursiva que extrae las diagonales y las agrega si son válidas
+    (define (extract-diagonals-from-start x y acc)
+      (cond
+        [(>= x (length grid)) acc]
+        [(>= y (length (car grid))) (extract-diagonals-from-start (+ x 1) 0 acc)]
+        [else
+         (extract-diagonals-from-start
+          x (+ y 1)
+          (add-if-valid (get-diagonal-down-right x y)
+                        (add-if-valid (get-diagonal-down-left x y) acc)))]))
+
+    (extract-diagonals-from-start 0 0 '()))
 
   (define (check-diagonals diagonals)
     (cond
-      ((null? diagonals) #f)
-      ((three-in-a-row? (car diagonals)) #t)
-      (else (check-diagonals (cdr diagonals)))))
+      [(null? diagonals) #f]
+      [(three-in-a-row? (car diagonals)) #t]
+      [else (check-diagonals (cdr diagonals))]))
 
   (check-diagonals (extract-diagonals grid)))
 
 #|
 
 TEST 
-
-|#
 
 (define test 
   '((x o o)
@@ -248,6 +250,22 @@ TEST
 
 (displayln (draw? test))
 (displayln (winner? test))
+
+(define test1
+  '((x _ _)
+    (_ x _)
+    (_ _ x)))
+
+(define test2
+  '((_ _ x)
+    (_ x _)
+    (x _ _)))
+
+
+(displayln (winner?-d test1))
+(displayln (winner?-d test2))
+
+|#
 
 #|
 =================================================================================================

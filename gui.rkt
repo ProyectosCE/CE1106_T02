@@ -76,8 +76,6 @@ Consulta el archivo LICENSE para más detalles.
   ;; Mostrar el diálogo
   (send mi-dialogo show #t))
 
-
-
 ;; Función para mostrar la pantalla de ayuda
 (define (mostrar-ayuda)
   (mostrar-mensaje-con-editor "Ayuda" "Use las teclas de flecha o WASD para mover\nUse 'espacio' o 'enter' para seleccionar." "assets/help.png"))
@@ -101,26 +99,6 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
                         [label "Tic Tac Toe"]
                         [width 600]
                         [height 600]))
-
-;; Crear la barra de menú
-(define game-menu-bar (new menu-bar% [parent game-frame]))
-
-;; Crear los menús y los elementos de menú
-(define menu-opciones (new menu% [parent game-menu-bar] [label "Opciones"]))
-(new menu-item% 
-     [parent menu-opciones] 
-     [label "Cambiar Tamaño"] 
-     [callback (lambda (item event) (cambiar-tamano))])
-(new menu-item% 
-     [parent menu-opciones] 
-     [label "Información"] 
-     [callback (lambda (item event) (mostrar-informacion))])
-(new menu-item% 
-     [parent menu-opciones] 
-     [label "Ayuda"] 
-     [callback (lambda (item event) (mostrar-ayuda))])
-
-
 
 ;; Clase para crear un canvas con un color y un carácter específico
 (define canvas-box%
@@ -376,3 +354,4 @@ Función principal
   (send game-frame show #t)
   (send input-frame show #f))
 
+(TTT 3 3)

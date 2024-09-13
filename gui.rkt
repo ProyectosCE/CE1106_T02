@@ -94,6 +94,18 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
   (send game-frame center 'both)
   (send input-frame show #t))
 
+;; Variable global para almacenar el modo de control actual
+(define control-mode 'mouse) ; Control predeterminado por mouse
+
+;; Definir la función para cambiar los controles
+(define (cambiar-controles)
+  (if (eq? control-mode 'mouse)
+      (set! control-mode 'keyboard)
+      (set! control-mode 'mouse))
+  (display (format "Función para cambiar los controles activada. Modo actual: ~a\n" control-mode))
+  ;; Redibujar el canvas para actualizar el cuadro de selección
+  (send game-frame refresh))
+
 ;; Ventana para jugar el juego
 (define game-frame (new frame%
                         [label "Tic Tac Toe"]
@@ -101,6 +113,7 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
                         [height 600]))
 
 ;; Clase para crear un canvas con un color y un carácter específico
+;; Implementación basada en el código de referencia: https://github.com/JonDGS/Tic-tac-Racket/blob/master/gui.rkt
 (define canvas-box%
   (class canvas%
     (init-field [character #\space]
@@ -109,73 +122,115 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
                 [color (make-color 49 152 183)]) ; Color inicial del jugador en formato RGB
     (inherit get-dc)
 
+    ;; Evento de teclado
     (define/override (on-char e)
-      (define key (send e get-key-code))
+      (when (eq? control-mode 'keyboard) ; Verifica si el modo de control es 'keyboard'
+        (define key (send e get-key-code))
+        ;; Verifica las teclas de flecha, AWSD (mayúsculas y minúsculas) y espacio o enter para la selección
+        (cond
+          [(or (equal? key #\w) (equal? key #\W) (equal? key 'up)) 
+           (set! current-row (max 0 (- current-row 1)))]
+          [(or (equal? key #\s) (equal? key #\S) (equal? key 'down)) 
+           (set! current-row (min (- global-rows 1) (+ current-row 1)))]
+          [(or (equal? key #\a) (equal? key #\A) (equal? key 'left)) 
+           (set! current-column (max 0 (- current-column 1)))]
+          [(or (equal? key #\d) (equal? key #\D) (equal? key 'right)) 
+           (set! current-column (min (- global-columns 1) (+ current-column 1)))]
+          [(or (equal? key #\k) (equal? key #\space) (equal? key #\return))
+           ;; Solo marca la celda si está vacía
+           (when (cell-empty? current-row current-column)
+             (set! game-grid (matrix-set-at game-grid current-row current-column 'x))
+             ;; Actualiza el carácter mostrado en el canvas seleccionado
+             (send (list-ref canvases (+ current-column (* current-row global-columns))) set-character #\x)
+             (send (list-ref canvases (+ current-column (* current-row global-columns))) refresh)
+             (displayln game-grid)
 
-      ;; Verifica las teclas de flecha, AWSD (mayúsculas y minúsculas) y espacio o enter para la selección
-      (cond
-        [(or (equal? key #\w) (equal? key #\W) (equal? key 'up)) 
-         (set! current-row (max 0 (- current-row 1)))]
-        [(or (equal? key #\s) (equal? key #\S) (equal? key 'down)) 
-         (set! current-row (min (- global-rows 1) (+ current-row 1)))]
-        [(or (equal? key #\a) (equal? key #\A) (equal? key 'left)) 
-         (set! current-column (max 0 (- current-column 1)))]
-        [(or (equal? key #\d) (equal? key #\D) (equal? key 'right)) 
-         (set! current-column (min (- global-columns 1) (+ current-column 1)))]
-        [(or (equal? key #\k) (equal? key #\space) (equal? key #\return))
-         ;; Solo marca la celda si está vacía
-         (when (cell-empty? current-row current-column)
-           (set! game-grid (matrix-set-at game-grid current-row current-column 'x))
-           ;; Actualiza el carácter mostrado en el canvas seleccionado
-           (send (list-ref canvases (+ current-column (* current-row global-columns))) set-character #\x)
-           (send (list-ref canvases (+ current-column (* current-row global-columns))) refresh)
-           (displayln game-grid)
+             ;; Verifica si el jugador ganó o si hay un empate después del movimiento del jugador
+             (when (winner? game-grid)
+               (mostrar-mensaje-simple "Ganador" "¡Has ganado!" "assets/trofeo.png")
+               (reset-game))
+             
+             (when (draw? game-grid)
+               (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png")
+               (reset-game))
 
-           ;; Verifica si el jugador ganó o si hay un empate después del movimiento del jugador
-           (when (winner? game-grid)
-             (mostrar-mensaje-simple "Ganador" "¡Has ganado!" "assets/trofeo.png") ; Usar función personalizada
-             (reset-game))
-           
-           (when (draw? game-grid)
-             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png") ; Usar función personalizada
-             (reset-game))
+             ;; Turno del greedy-bot, solo si el juego no ha terminado
+             (when (and (not (draw? game-grid)) (not (winner? game-grid)))
+               (let ((move (greedy-bot game-grid 'o)))
+                 ;; Establece el movimiento del greedy-bot y refresca el canvas
+                 (set-computer-move move)))
 
-           ;; Turno del greedy-bot, solo si el juego no ha terminado
-           (when (and (not (draw? game-grid)) (not (winner? game-grid)))
-             (let ((move (greedy-bot game-grid 'o))) ; Usa greedy-bot para obtener el movimiento
-               ;; Establece el movimiento del greedy-bot y refresca el canvas
-               (set-computer-move move)))
+             ;; Verifica otra vez si el jugador ganó después del movimiento del greedy-bot
+             (when (winner? game-grid)
+               (mostrar-mensaje-simple "Ganador" "¡El greedy-bot ganó!" "assets/bot.png")
+               (reset-game))
 
-           ;; Verifica otra vez si el jugador ganó después del movimiento del greedy-bot
-           (when (winner? game-grid)
-             (mostrar-mensaje-simple "Ganador" "¡El greedy-bot ganó!" "assets/bot.png") ; Usar función personalizada
-             (reset-game))
+             ;; Verifica si hay un empate después del movimiento del greedy-bot
+             (when (draw? game-grid)
+               (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png")
+               (reset-game)))])
 
-           ;; Verifica si hay un empate después del movimiento del greedy-bot
-           (when (draw? game-grid)
-             (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png") ; Usar función personalizada
-             (reset-game)))])
+        ;; Actualiza la pantalla para mostrar la selección actual
+        (send game-frame refresh)
+        (send this refresh)))
 
-      ; Actualiza la pantalla para mostrar la selección actual
-      (send game-frame refresh)
-      (send this refresh))
-
-    ; Forzar el foco en el canvas para la entrada del teclado
+    ;; Evento de ratón
     (define/override (on-event e)
-      (send this focus)) 
+      (send this focus)
+      ;; Manejo del clic izquierdo del mouse
+      (when (eq? control-mode 'mouse) ; Verifica si el modo de control es 'mouse'
+        (when (and (equal? (send e get-event-type) 'left-down) (equal? character #\space))
+          ;; Procesa el movimiento del jugador
+          (set! game-grid (matrix-set-at game-grid row column 'x))
+          (send this set-character #\x)
+          (send this refresh)
+          (displayln " ")
+          (displayln game-grid)
+          (sleep/yield 0.1)
 
-    ; Dibuja el canvas, con un resaltado si esta es la selección actual  
+          ;; Verifica si el juego ha terminado en empate
+          (when (draw? game-grid)
+            (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png")
+            (reset-game))
+
+          ;; Verifica si el jugador ha ganado
+          (when (winner? game-grid)
+            (mostrar-mensaje-simple "Ganador" "¡Has ganado!" "assets/trofeo.png")
+            (reset-game))
+
+          ;; Turno del greedy-bot, solo si el juego no ha terminado
+          (when (and (not (draw? game-grid)) (not (winner? game-grid)))
+            (let ((move (greedy-bot game-grid 'o)))
+              ;; Establece el movimiento del greedy-bot y refresca el canvas
+              (set-computer-move move)))
+
+          ;; Verifica otra vez si el jugador ganó después del movimiento del greedy-bot
+          (when (winner? game-grid)
+            (mostrar-mensaje-simple "Ganador" "¡El greedy-bot ganó!" "assets/bot.png")
+            (reset-game))
+
+          ;; Verifica si hay un empate después del movimiento del greedy-bot
+          (when (draw? game-grid)
+            (mostrar-mensaje-simple "Empate" "¡Es un empate!" "assets/empate.png")
+            (reset-game))
+          
+          (send (get-dc) clear)
+          (send this refresh))))
+
+    ;; Dibuja el canvas, con un resaltado si esta es la selección actual  
     (define/override (on-paint)
       (let ((dc (get-dc)))
         (send dc clear)
         (let-values (((x y) (send this get-size)))
-          (when (and (= row current-row) (= column current-column))
+          ;; Dibuja el cuadro verde solo si el modo de control es 'keyboard'
+          (when (and (eq? control-mode 'keyboard) (= row current-row) (= column current-column))
             (send dc set-brush (make-object brush% (make-color 144 238 144) 'solid)) ; Color verde claro (light green) en formato RGB
             (send dc draw-rectangle 0 0 x y))
           (send dc set-text-foreground (get-canvas-color character))
           (send dc set-font (make-object font% (+ 60 (* -2 (+ global-rows global-columns))) 'default))
           (send dc draw-text (string character) (/ (- x (+ 60 (* -2 (+ global-rows global-columns)))) 2) (/ (- y (+ 93 (* -3 (+ global-rows global-columns)))) 2)))))
 
+    ;; Métodos públicos
     (define/public (set-color c)
       (set! color c))
    
@@ -183,7 +238,6 @@ Jimmy Feng Feng, \nAlexander Montero Vargas"
       (set! character char))
    
     (super-new)))
-
 
 ; Retorna el color asociado con el carácter jugable
 (define (get-canvas-color character)
@@ -320,22 +374,27 @@ Función principal
   (set! game-frame (new frame% [label "Tic Tac Toe"] [width 600] [height 600]))
 
   ;; Crear la barra de menú para la nueva ventana
-  (define game-menu-bar (new menu-bar% [parent game-frame]))
+(define game-menu-bar (new menu-bar% [parent game-frame]))
 
-  ;; Crear los menús y los elementos de menú
-  (define menu-opciones (new menu% [parent game-menu-bar] [label "Opciones"]))
-  (new menu-item% 
-       [parent menu-opciones] 
-       [label "Cambiar Tamaño"] 
-       [callback (lambda (item event) (cambiar-tamano))])
-  (new menu-item% 
-       [parent menu-opciones] 
-       [label "Información"] 
-       [callback (lambda (item event) (mostrar-informacion))])
-  (new menu-item% 
-       [parent menu-opciones] 
-       [label "Ayuda"] 
-       [callback (lambda (item event) (mostrar-ayuda))])
+;; Crear los menús y los elementos de menú
+(define menu-opciones (new menu% [parent game-menu-bar] [label "Opciones"]))
+(new menu-item% 
+     [parent menu-opciones] 
+     [label "Cambiar Tamaño"] 
+     [callback (lambda (item event) (cambiar-tamano))])
+(new menu-item% 
+     [parent menu-opciones] 
+     [label "Información"] 
+     [callback (lambda (item event) (mostrar-informacion))])
+(new menu-item% 
+     [parent menu-opciones] 
+     [label "Ayuda"] 
+     [callback (lambda (item event) (mostrar-ayuda))])
+(new menu-item% 
+     [parent menu-opciones] 
+     [label "Cambiar Controles"] 
+     [callback (lambda (item event) (cambiar-controles))]) ;; Nueva opción de menú
+
 
   ;; Centrar la ventana
   (send game-frame center 'both)

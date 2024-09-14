@@ -1,7 +1,9 @@
 #lang scribble/manual
 @(require scribble/base racket/draw)
 
-@title{Documentación del Proyecto Tic Tac Toe}
+@title{Documentación Interna del Proyecto TicTacToe - Tarea 2 - CE1106}
+
+La presente documentación interna tiene como objetivo dar una idea de cómo funcionan todas las funciones presentes en el código del proyecto.
 
 @section{Estructura del Proyecto}
 

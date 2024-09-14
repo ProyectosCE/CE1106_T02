@@ -103,7 +103,8 @@ Para este archivo gui.rkt se tomó como referencia general las siguientes fuente
 ;; Definir la función para mostrar la ayuda, adaptada al modo de control actual
 (define (mostrar-ayuda)
   (let ((mensaje (if (eq? control-mode 'keyboard)
-                     "Use las teclas de flecha o WASD para mover\nUse 'espacio' o 'enter' para seleccionar."
+                     "TECLADO:Use las teclas de flecha o WASD para mover\nUse 'espacio' o 'enter' para seleccionar.\nCONTROL:\
+Use el joystick para moverse\ny el boton superior para seleccionar la casilla."
                      "Use el clic izquierdo del mouse para seleccionar.")))
     (mostrar-mensaje-con-editor "Ayuda" mensaje "assets/help.png")))
 
